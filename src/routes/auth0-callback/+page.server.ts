@@ -32,8 +32,10 @@ export const load: PageServerLoad = async ({ url, fetch, platform }) => {
 
   const { id_token } = json;
 
+  console.log(id_token);
+
   // this is just a demo, but you should validate the JWT
-  const userJson = JSON.parse(atob(id_token.split('.')[1]));
+  const userJson = JSON.parse(atob(id_token.replace(/_/g, '/').replace(/-/g, '+').split('.')[1]));
 
   await fetch('/api/user', {
     method: 'POST',
