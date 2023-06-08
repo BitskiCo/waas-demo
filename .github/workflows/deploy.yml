@@ -1,0 +1,58 @@
+name: Deploy Cloudflare Worker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://npm.pkg.github.com
+          cache: 'npm'
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: |
+            node_modules
+            ~/.cache
+          key: ${{ runner.os }}-buildv3-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-buildv3-${{ env.cache-name }}-
+            ${{ runner.os }}-buildv3-
+            ${{ runner.os }}-
+
+      - name: Install Dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_PAT }}
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
+          environment: 'production'
+          secrets: |
+            AUTH0_CLIENT_SECRET
+            BITSKI_CLIENT_SECRET
+        env:
+          USER: github
+          AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+          BITSKI_CLIENT_SECRET: ${{ secrets.BITSKI_CLIENT_SECRET }}
