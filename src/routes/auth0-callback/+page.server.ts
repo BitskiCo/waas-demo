@@ -4,9 +4,9 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, fetch, platform }) => {
   const code = url.searchParams.get('code') ?? '';
-  const { CLIENT_ID, CLIENT_SECRET } = platform.env;
+  const { AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET } = platform.env;
 
-  const bearerTokenCredentials = `${CLIENT_ID}:${CLIENT_SECRET}`;
+  const bearerTokenCredentials = `${AUTH0_CLIENT_ID}:${AUTH0_CLIENT_SECRET}`;
   const base64BearerTokenCredentials = btoa(bearerTokenCredentials);
 
   const resp = await fetch(`${AUTH_DOMAIN}/oauth/token`, {
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ url, fetch, platform }) => {
     body: new URLSearchParams({
       code,
       grant_type: 'authorization_code',
-      client_id: CLIENT_ID,
+      client_id: AUTH0_CLIENT_ID,
       code_verifier: CODE_CHALLENGE,
       redirect_uri: REDIRECT_URI,
     }),

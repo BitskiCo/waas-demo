@@ -1,0 +1,26 @@
+name = "waas-demo"
+account_id = "8adcb3fae9e027fc4172fa24662bbf11"
+compatibility_date = "2022-01-09"
+workers_dev = true
+send_metrics = false
+node_compat = true
+
+main = "./.cloudflare/worker.js"
+
+[build]
+command = "npm run build"
+
+[site]
+bucket = "./.cloudflare/public"
+
+[env.next]
+zone_id = "5451b8e50f99af57e4cba99e70a9eee4"
+name = "waas-demo-next"
+route = "https://waas-demo-next.bitski.com/*"
+vars = { AUTH0_CLIENT_ID = "k4tZH9p0KZyPC2Q87sXo0ql52EnE0zQj", BITSKI_CLIENT_ID="60947545-140d-46bf-ac5a-acec2e99a6cc" }
+
+[env.production]
+zone_id = "5451b8e50f99af57e4cba99e70a9eee4"
+name = "waas-demo"
+route = "https://waas-demo.bitski.com/*"
+vars = { AUTH0_CLIENT_ID = "k4tZH9p0KZyPC2Q87sXo0ql52EnE0zQj", BITSKI_CLIENT_ID="60947545-140d-46bf-ac5a-acec2e99a6cc" }
