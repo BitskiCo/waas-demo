@@ -19,7 +19,7 @@
     "@ethersproject/providers": "^5.7.2",
     "@panva/oauth4webapi": "^1.2.1",
     "@sveltejs/adapter-cloudflare": "^1.0.0-next.40",
-    "@sveltejs/kit": "^1.0.0-next.555",
+    "@sveltejs/kit": "^1.15.2",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
