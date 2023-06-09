@@ -13,8 +13,6 @@
   },
   "devDependencies": {
     "@apollo/rover": "^0.10.0",
-    "@bitskico/svelte-components": "^0.25.0",
-    "@bitskico/tailwind": "^7.4.1",
     "@ethersproject/providers": "^5.7.2",
     "@panva/oauth4webapi": "^1.2.1",
     "@sveltejs/adapter-cloudflare-workers": "^1.1.2",

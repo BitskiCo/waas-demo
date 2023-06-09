@@ -17,12 +17,12 @@
     {/if}
   </div>
 
-  <h1 class="heading-3">{heading}</h1>
-  <p class="text-grey text-center">{description}</p>
+  <h1 class="text-xl font-bold">{heading}</h1>
+  <p class="text-stone-700 text-center">{description}</p>
 
   {#if cta}
     <div class="flex justify-center m-4">
-      <button on:click class="btn btn-primary">{cta}</button>
+      <button on:click class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded">{cta}</button>
     </div>
   {/if}
 </div>

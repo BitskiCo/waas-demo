@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, fetch, platform }) => {
   const code = url.searchParams.get('code') ?? '';
-  const { AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET } = platform.env;
+  const { AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET } = platform?.env ?? {};
 
   const bearerTokenCredentials = `${AUTH0_CLIENT_ID}:${AUTH0_CLIENT_SECRET}`;
   const base64BearerTokenCredentials = btoa(bearerTokenCredentials);

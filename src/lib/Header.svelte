@@ -3,7 +3,7 @@
   import Menu from './Menu.svelte';
 </script>
 
-<header class="main-nav w-full flex items-center justify-between">
+<header class="shadow w-full flex items-center justify-between">
   <Logo />
   <div class="flex">
     <Menu />
