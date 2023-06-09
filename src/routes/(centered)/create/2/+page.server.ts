@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { clientCredentialsGrantRequest } from '@panva/oauth4webapi';
-import { USER_COOKIE } from '../../../api/user/+server';
+import { _USER_COOKIE } from '../../../api/user/+server';
 import { dev } from '$app/environment';
 import { BITSKI_AUTH_SERVER } from '$lib/constants';
 
@@ -15,7 +15,7 @@ export const actions: Actions = {
     });
     const { username, userId } = await userResp.json();
 
-    const { BITSKI_CLIENT_ID, BITSKI_CLIENT_SECRET } = platform.env;
+    const { BITSKI_CLIENT_ID, BITSKI_CLIENT_SECRET } = platform?.env ?? {};
 
     const params = new URLSearchParams();
     params.set('scope', 'apps'); // required to mint tokens
@@ -43,9 +43,12 @@ export const actions: Actions = {
       }),
     });
 
-    const { account } = await accountResp.json();
+    const json = await accountResp.json();
+    const { account } = await json;
 
-    cookies.set(USER_COOKIE, JSON.stringify({ username, userId, account }), {
+    console.log('account', json);
+
+    cookies.set(_USER_COOKIE, JSON.stringify({ username, userId, account }), {
       path: '/',
       httpOnly: true,
       sameSite: 'strict',
