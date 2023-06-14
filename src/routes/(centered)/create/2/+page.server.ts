@@ -3,7 +3,7 @@ import type { Actions } from './$types';
 import { clientCredentialsGrantRequest } from '@panva/oauth4webapi';
 import { _USER_COOKIE } from '../../../api/user/+server';
 import { dev } from '$app/environment';
-import { BITSKI_AUTH_SERVER } from '$lib/constants';
+import { BITSKI_AUTH_SERVER, BITSKI_CLIENT_ID } from '$lib/constants';
 
 export const actions: Actions = {
   default: async ({ fetch, platform, cookies }) => {
@@ -15,7 +15,7 @@ export const actions: Actions = {
     });
     const { username, userId } = await userResp.json();
 
-    const { BITSKI_CLIENT_ID, BITSKI_CLIENT_SECRET } = platform?.env ?? {};
+    const { BITSKI_CLIENT_SECRET } = platform?.env ?? {};
 
     const params = new URLSearchParams();
     params.set('scope', 'apps'); // required to mint tokens
@@ -45,8 +45,6 @@ export const actions: Actions = {
 
     const json = await accountResp.json();
     const { account } = await json;
-
-    console.log('account', json);
 
     cookies.set(_USER_COOKIE, JSON.stringify({ username, userId, account }), {
       path: '/',
