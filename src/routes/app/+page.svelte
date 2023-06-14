@@ -24,7 +24,7 @@
       },
     });
 
-    provider.request({
+    await provider.request({
       method: EthMethod.wallet_switchEthereumChain,
       params: [
         {
