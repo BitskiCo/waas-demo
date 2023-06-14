@@ -1,9 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { clientCredentialsGrantRequest } from '@panva/oauth4webapi';
 import { _USER_COOKIE } from '../../../api/user/+server';
 import { dev } from '$app/environment';
-import { BITSKI_AUTH_SERVER } from '$lib/constants';
+import { BITSKI_CLIENT_ID } from '$lib/constants';
 
 export const actions: Actions = {
   default: async ({ fetch, platform, cookies }) => {
@@ -15,26 +14,15 @@ export const actions: Actions = {
     });
     const { username, userId } = await userResp.json();
 
-    const { BITSKI_CLIENT_ID, BITSKI_CLIENT_SECRET } = platform?.env ?? {};
+    const { BITSKI_CLIENT_SECRET } = platform?.env ?? {};
 
     const params = new URLSearchParams();
     params.set('scope', 'apps'); // required to mint tokens
 
-    const credentialResp = await clientCredentialsGrantRequest(
-      BITSKI_AUTH_SERVER,
-      {
-        client_id: BITSKI_CLIENT_ID,
-        client_secret: BITSKI_CLIENT_SECRET,
-      },
-      params,
-    );
-
-    const { access_token } = await credentialResp.json();
-
-    const accountResp = await fetch('https://account.bitski.com/v2/federated-accounts', {
+    const accountResp = await fetch(`https://account.bitski.com/v2/federated-accounts`, {
       method: 'POST',
       headers: {
-        authorization: `Bearer ${access_token}`,
+        Authorization: `Basic ${btoa(`${BITSKI_CLIENT_ID}:${BITSKI_CLIENT_SECRET}`)}`,
         'User-Agent': 'waas-demo/0.0.1',
         'content-type': 'application/json',
       },
@@ -46,12 +34,10 @@ export const actions: Actions = {
     const json = await accountResp.json();
     const { account } = await json;
 
-    console.log('account', json);
-
     cookies.set(_USER_COOKIE, JSON.stringify({ username, userId, account }), {
       path: '/',
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: !dev,
       maxAge: 60 * 60 * 24 * 30,
     });

@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ fetch }) => {
+export const load: PageLoad = async ({ fetch, url }) => {
   const resp = await fetch('/api/user', {
     method: 'GET',
     headers: {
@@ -8,9 +8,14 @@ export const load: PageLoad = async ({ fetch }) => {
     },
   });
 
-  const account: string = (await resp.json()).account;
+  const { username, account, userId } = await resp.json();
+
+  const result = url.searchParams.get('result');
 
   return {
+    username,
     account,
+    userId,
+    result,
   };
 };
