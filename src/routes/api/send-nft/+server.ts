@@ -1,17 +1,17 @@
-import { BITSKI_AUTH_SERVER, BITSKI_CLIENT_ID } from '$lib/constants';
+import { BITSKI_AUTH_SERVER, BITSKI_MINTING_CLIENT_ID } from '$lib/constants';
 import { clientCredentialsGrantRequest } from '@panva/oauth4webapi';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, platform }) => {
   const { account } = await request.json();
 
-  const { BITSKI_CLIENT_SECRET } = platform?.env ?? {};
+  const { BITSKI_MINTING_CLIENT_SECRET } = platform?.env ?? {};
 
   const credentialResp = await clientCredentialsGrantRequest(
     BITSKI_AUTH_SERVER,
     {
-      client_id: BITSKI_CLIENT_ID,
-      client_secret: BITSKI_CLIENT_SECRET,
+      client_id: BITSKI_MINTING_CLIENT_ID,
+      client_secret: BITSKI_MINTING_CLIENT_SECRET,
     },
     new URLSearchParams(),
   );
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
         'User-Agent': 'waas-demo/0.0.1',
-        'x-client-id': BITSKI_CLIENT_ID,
+        'x-client-id': BITSKI_MINTING_CLIENT_ID,
       },
       body: JSON.stringify({
         initialOwner: account,

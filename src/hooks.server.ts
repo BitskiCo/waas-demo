@@ -7,10 +7,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     event.platform = {
       env: {
-        AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
         AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
-        BITSKI_CLIENT_ID: process.env.BITSKI_CLIENT_ID,
         BITSKI_CLIENT_SECRET: process.env.BITSKI_CLIENT_SECRET,
+        BITSKI_MINTING_CLIENT_SECRET: process.env.BITSKI_MINTING_CLIENT_SECRET,
       },
     } as any;
   }

@@ -1,5 +1,6 @@
 export const BITSKI_APP_ID = '6ee158ab-0210-4aa9-90e1-fba42b4d0d71';
 export const BITSKI_CLIENT_ID = '60947545-140d-46bf-ac5a-acec2e99a6cc';
+export const BITSKI_MINTING_CLIENT_ID = '5fa21279-86eb-4c2b-b55c-a99c2c7de71b';
 export const AUTH0_CLIENT_ID = 'k4tZH9p0KZyPC2Q87sXo0ql52EnE0zQj';
 
 // Configuration from https://account.bitski.com/.well-known/openid-configuration

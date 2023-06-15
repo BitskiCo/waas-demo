@@ -5,95 +5,37 @@
   import Location from '$lib/Location.svelte';
 
   import type { PageData } from './$types';
-  import { createBitskiProvider } from 'bitski-provider';
-  import { BITSKI_APP_ID } from '$lib/constants';
-  import { EthMethod } from 'eth-provider-types';
+  import { onMount } from 'svelte';
 
   export let data: PageData;
 
-  let signTypedDataV4Result = data.result;
+  let balances: any;
 
-  const signTypedDataV4 = async () => {
-    const provider = createBitskiProvider({
-      appId: BITSKI_APP_ID,
-      signerBaseUrl: 'https://sign-next.bitski.com',
-      apiBaseUrl: 'http://127.0.0.1:5173/api',
-      transactionCallbackUrl: window.location.origin + '/app',
-      waas: {
-        userId: data.userId,
-      },
+  onMount(() => {
+    pollForNfts();
+  });
+
+  const claimNFT = async () => {
+    const response = await fetch('/api/send-nft', {
+      method: 'POST',
+      body: JSON.stringify({
+        account: data.account,
+      }),
     });
 
-    await provider.request({
-      method: EthMethod.wallet_switchEthereumChain,
-      params: [
-        {
-          chainId: '0x13881',
-        },
-      ],
-    });
+    if (response.ok) {
+      pollForNfts();
+    }
+  };
 
-    const msgParams = {
-      domain: {
-        chainId: '0x13881',
-        name: 'Ether Mail',
-        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-        version: '1',
-      },
-      message: {
-        contents: 'Hello, Bob!',
-        from: {
-          name: 'Cow',
-          wallets: [
-            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-            '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-          ],
-        },
-        to: [
-          {
-            name: 'Bob',
-            wallets: [
-              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-              '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
-              '0xB0B0b0b0b0b0B000000000000000000000000000',
-            ],
-          },
-        ],
-      },
-      primaryType: 'Mail',
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        Group: [
-          { name: 'name', type: 'string' },
-          { name: 'members', type: 'Person[]' },
-        ],
-        Mail: [
-          { name: 'from', type: 'Person' },
-          { name: 'to', type: 'Person[]' },
-          { name: 'contents', type: 'string' },
-        ],
-        Person: [
-          { name: 'name', type: 'string' },
-          { name: 'wallets', type: 'address[]' },
-        ],
-      },
-    };
+  const pollForNfts = async () => {
+    const response = await fetch(
+      `https://api.bitski.com/v2/balances?address=${data.account}&chainIds=80001&nfts=true`,
+    );
+    ({ balances } = await response.json());
 
-    try {
-      const from = data.account;
-      const sign = await provider.request({
-        method: EthMethod.eth_signTypedData_v4,
-        params: [from, JSON.stringify(msgParams)],
-      });
-      signTypedDataV4Result = sign;
-    } catch (err) {
-      console.error(err);
-      signTypedDataV4Result = `Error: ${(err as Error).message}`;
+    if (!balances || balances.length === 0) {
+      setTimeout(pollForNfts, 1000);
     }
   };
 </script>
@@ -113,14 +55,12 @@
 
   <button
     class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded"
-    on:click={signTypedDataV4}
+    on:click={claimNFT}
   >
-    Sign Typed Data
+    Claim NFT
   </button>
 
-  <div>
-    Result: {signTypedDataV4Result}
-  </div>
+  {balances}
 
   <Explainer
     text="Users can now easily interact with your product's experiences e.g. viewing NFTs, tokens, and activity. If users want to self custody their wallet to use on external products, they'll need to claim their wallet on Bitski (view claim flow)"
