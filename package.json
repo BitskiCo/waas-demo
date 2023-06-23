@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@apollo/rover": "^0.10.0",
+    "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@panva/oauth4webapi": "^1.2.1",
     "@sveltejs/adapter-cloudflare-workers": "^1.1.2",
@@ -29,6 +30,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "eth-provider-types": "^0.2.0-next.2",
+    "ethers": "^6.6.0",
     "postcss": "^8.4.17",
     "postcss-load-config": "^4.0.1",
     "prettier": "^2.6.2",
