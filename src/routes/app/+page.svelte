@@ -6,7 +6,7 @@
 
   import type { PageData } from './$types';
   import { onMount } from 'svelte';
-  import { createBitskiProvider } from 'bitski-provider';
+  import { BitskiProvider, createBitskiProvider } from 'bitski-provider';
   import { BITSKI_APP_ID } from '$lib/constants';
   import { EthMethod } from 'eth-provider-types';
   import { Interface } from '@ethersproject/abi';
@@ -14,7 +14,7 @@
   export let data: PageData;
 
   let balances: any;
-  let provider: any;
+  let provider: BitskiProvider;
 
   onMount(() => {
     provider = createBitskiProvider({
@@ -27,16 +27,12 @@
       },
     });
 
+    provider.request({
+      method: EthMethod.wallet_switchEthereumChain,
+      params: [{ chainId: '0x89' }],
+    });
+
     pollForNfts();
-
-    if (data.result) {
-      const { result } = JSON.parse(atob(data.result));
-
-      provider.request({
-        method: EthMethod.eth_sendRawTransaction,
-        params: [result],
-      });
-    }
   });
 
   const claimNFT = async () => {
@@ -99,16 +95,6 @@
   }
 
   export const burnToken = async (contractAddress: string, tokenId: string): Promise<void> => {
-    const provider = createBitskiProvider({
-      appId: BITSKI_APP_ID,
-      signerBaseUrl: 'https://sign-next.bitski.com',
-      apiBaseUrl: 'http://127.0.0.1:5173/api',
-      transactionCallbackUrl: window.location.origin + '/app',
-      waas: {
-        userId: data.userId,
-      },
-    });
-
     const erc1155TxnData = create1155TransactionData(
       data.account,
       '0x0000000000000000000000000000000000000000',
