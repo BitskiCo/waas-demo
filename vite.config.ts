@@ -1,28 +1,28 @@
-import rollupNodePolyFill from 'rollup-plugin-node-polyfills';
 import { sveltekit } from '@sveltejs/kit/vite';
 import type { UserConfig } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 const config: UserConfig = {
-  plugins: [sveltekit()],
+  plugins: [
+    sveltekit(),
+    nodePolyfills({
+      // To exclude specific polyfills, add them to this list.
+      exclude: [
+        'fs', // Excludes the polyfill for `fs` and `node:fs`.
+      ],
+      // Whether to polyfill specific globals.
+      globals: {
+        Buffer: true, // can also be 'build', 'dev', or false
+        global: true,
+        process: true,
+      },
+      // Whether to polyfill `node:` protocol imports.
+      protocolImports: true,
+    }),
+  ],
 
   build: {
     sourcemap: true,
-    rollupOptions: {
-      plugins: [
-        // Enable rollup polyfills plugin
-        // used during production bundling
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rollupNodePolyFill({}) as any,
-      ],
-    },
-  },
-
-  resolve: {
-    alias: {
-      buffer: 'rollup-plugin-node-polyfills/polyfills/buffer-es6',
-      zlib: 'rollup-plugin-node-polyfills/polyfills/zlib',
-      util: 'rollup-plugin-node-polyfills/polyfills/util',
-    },
   },
 };
 

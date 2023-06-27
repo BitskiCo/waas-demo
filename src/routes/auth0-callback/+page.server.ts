@@ -1,10 +1,11 @@
 import { CODE_CHALLENGE, REDIRECT_URI, AUTH_DOMAIN } from '$lib/authClient';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { AUTH0_CLIENT_ID } from '$lib/constants';
 
 export const load: PageServerLoad = async ({ url, fetch, platform }) => {
   const code = url.searchParams.get('code') ?? '';
-  const { AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET } = platform?.env ?? {};
+  const { AUTH0_CLIENT_SECRET } = platform?.env ?? {};
 
   const bearerTokenCredentials = `${AUTH0_CLIENT_ID}:${AUTH0_CLIENT_SECRET}`;
   const base64BearerTokenCredentials = btoa(bearerTokenCredentials);
