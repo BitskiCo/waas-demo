@@ -19,7 +19,7 @@
   onMount(() => {
     provider = createBitskiProvider({
       appId: BITSKI_APP_ID,
-      apiBaseUrl: 'http://127.0.0.1:5173/api',
+      apiBaseUrl: window.location.origin + '/api',
       transactionCallbackUrl: window.location.origin + '/app',
       waas: {
         userId: data.userId,
