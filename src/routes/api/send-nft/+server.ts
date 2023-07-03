@@ -1,5 +1,4 @@
-import { BITSKI_AUTH_SERVER, BITSKI_CLIENT_ID } from '$lib/constants';
-import { clientCredentialsGrantRequest } from '@panva/oauth4webapi';
+import { BITSKI_CLIENT_ID } from '$lib/constants';
 import type { RequestHandler } from './$types';
 import { v4 as uuid } from 'uuid';
 

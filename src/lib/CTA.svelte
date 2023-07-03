@@ -22,7 +22,11 @@
 
   {#if cta}
     <div class="flex justify-center m-4">
-      <button on:click class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded">{cta}</button>
+      <button
+        on:click
+        class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded"
+        >{cta}</button
+      >
     </div>
   {/if}
 </div>
