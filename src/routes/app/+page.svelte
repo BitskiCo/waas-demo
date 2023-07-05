@@ -23,6 +23,7 @@
       transactionCallbackUrl: window.location.origin + '/app',
       waas: {
         userId: data.userId,
+        transactionProxyUrl: window.location.origin + '/api/transactions',
       },
     });
 
