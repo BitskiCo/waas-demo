@@ -65,3 +65,5 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
+          sourcemaps: './.cloudflare/public'
+          ignore_empty: true
