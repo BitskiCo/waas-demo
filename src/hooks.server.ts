@@ -1,13 +1,8 @@
 import { dev } from '$app/environment';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
-import { sequence } from '@sveltejs/kit/hooks';
-import * as Sentry from '@sentry/sveltekit';
+import { Toucan } from 'toucan-js';
 
-Sentry.init({
-  dsn: 'https://15722ccb9b9343b7b6b7a02d4975309a@o48269.ingest.sentry.io/4505467323351040',
-});
-
-const configHandle: Handle = async ({ event, resolve }) => {
+export const handle: Handle = async ({ event, resolve }) => {
   if (dev) {
     await import('dotenv/config');
 
@@ -22,9 +17,16 @@ const configHandle: Handle = async ({ event, resolve }) => {
   return await resolve(event);
 };
 
-export const handle: Handle = sequence(Sentry.sentryHandle(), configHandle);
+export const handleError: HandleServerError = ({ error, event }) => {
+  // Use `toucan-js` until sentry supports non-node environments
+  // see issue <https://github.com/getsentry/sentry-javascript/issues/8291>
+  const sentry = new Toucan({
+    dsn: 'https://15722ccb9b9343b7b6b7a02d4975309a@o48269.ingest.sentry.io/4505467323351040',
+    request: event.request,
+  });
 
-export const debugErrors: HandleServerError = ({ error }) => {
+  sentry.captureException(error);
+
   if (error instanceof Error) {
     return {
       message: error.message,
@@ -36,5 +38,3 @@ export const debugErrors: HandleServerError = ({ error }) => {
     message: 'Internal error',
   };
 };
-
-export const handleError = Sentry.handleErrorWithSentry(debugErrors);
