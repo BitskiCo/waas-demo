@@ -25,7 +25,9 @@ export const handleError: HandleServerError = ({ error, event }) => {
     request: event.request,
   });
 
-  sentry.captureException(error);
+  if (!dev && !error?.message?.includes('Not found')) {
+    sentry.captureException(error);
+  }
 
   if (error instanceof Error) {
     return {
